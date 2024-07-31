@@ -9,7 +9,7 @@
  */
 
 /**
- * Judgment Windows
+ * Judgement Windows
  * Perfect - +-50ms
  * Great   - +-100ms
  * Good    - +-150ms
@@ -41,7 +41,7 @@ const PAUSE = 5;
 const RESULT = 6;
 const EXIT = 7;
 
-// judgment states
+// judgement states
 const PERFECT = 0;
 const GREAT = 1;
 const GOOD = 2;
@@ -50,7 +50,7 @@ const MISS = 4;
 const NONE = 5;
 
 const THEME_COLOR = "rgb(52,73,94)";
-const JUDGMENT_COLORS = [
+const JUDGEMENT_COLORS = [
   [
     "rgb(212,172,13)",
     "rgb(34,153,84)",
@@ -67,7 +67,7 @@ const JUDGMENT_COLORS = [
   ]
 ];
 const DIFFICULTY_COLORS = ["blue", "green", "orange", "red", "purple", "black"];
-const SCORES = [100, 60, 30, 10, 0]; // set scores achieved for each type of judgment out of 100
+const SCORES = [100, 60, 30, 10, 0]; // set scores achieved for each type of judgement out of 100
 
 var tutorialImages = [];
 
@@ -75,7 +75,7 @@ var noteSpeed = 5; // the speed of which the notes fall at
 var customOffset = 0; // offset determined by the player; adding on to the fixed OFFSET
 var changeByTen = false; // allow offset to be increased and decreased by 10 instead of 1
 
-var startTime; // the start time of the program in milliseconds obatained from Date.now()
+var startTime; // the start time of the program in milliseconds obtained from Date.now()
 
 var nSong = SONGS.length;
 var page = MENU;
@@ -105,9 +105,9 @@ var accuracy;
 var counts; // track the number of perfects, greats, goods, bads, and misses
 var nEarly, nLate; // track the number of early and late hits
 
-var currentJudgmentState;
-var currentJudgmentEarly; // stores if the player hit the note too early or too late for the current note; true if the player hits too early and false if the player hits too late
-var judgmentStartTime; // the time in millisecond of the most recent changes to the variable currentJudgmentState
+var currentJudgementState;
+var currentJudgementEarly; // stores if the player hit the note too early or too late for the current note; true if the player hits too early and false if the player hits too late
+var judgementStartTime; // the time in millisecond of the most recent changes to the variable currentJudgementState
 
 var wait = false;
 var waitTime;
@@ -172,7 +172,7 @@ function drawKeys() {
     } else {
       fill(0);
     }
-    rect(280+i*NOTE_WIDTH+NOTE_WIDTH/2,451,NOTE_WIDTH,98); // increase the y-value and decrease the height a bit to avoid the borders blocking the judgment line
+    rect(280+i*NOTE_WIDTH+NOTE_WIDTH/2,451,NOTE_WIDTH,98); // increase the y-value and decrease the height a bit to avoid the borders blocking the judgement line
     if (keysPressed[i]) {
       fill(0);
     } else {
@@ -183,7 +183,7 @@ function drawKeys() {
 }
 
 function progressBar() {
-  // draws a progrees bar on the top of the screen that shows the progress of the current song
+  // draws a progress bar on the top of the screen that shows the progress of the current song
   noStroke();
   fill(160);
   rectMode(CORNER);
@@ -212,7 +212,7 @@ function moveNotes() {
       }
     }
   }
-  
+
   // push all notes that approached the playfield
   while (chartCursor < currentSong.chart.length) {
     let currentNote = currentSong.chart[chartCursor];
@@ -222,7 +222,7 @@ function moveNotes() {
         type: currentNote[2] != -1, // true if the note is a hold note; false if the note is a tap note
         startY: 400-(currentNote[1]+OFFSET+customOffset-songCurrentTime)*noteSpeed/SPEED_DIVISOR,
         endY: currentNote[2] == -1 ? 0 : 400-(currentNote[2]+OFFSET+customOffset-songCurrentTime)*noteSpeed/SPEED_DIVISOR,
-        holded: false,
+        held: false,
         greyed: false
       });
       ++chartCursor;
@@ -260,7 +260,7 @@ function displayNotes() {
   for (let i = 0; i < 4; ++i) {    
     for (let j = 0; j < notesQueues[i].length; ++j) {
       if (notesQueues[i][j].type) {
-        if (notesQueues[i][j].holded) {
+        if (notesQueues[i][j].held) {
           drawNote(i,notesQueues[i][j].endY,max(min(notesQueues[i][j].startY,400)-notesQueues[i][j].endY,0),true,false);
         } else {
           drawNote(i,notesQueues[i][j].endY,notesQueues[i][j].startY-notesQueues[i][j].endY,true,notesQueues[i][j].greyed);
@@ -272,8 +272,8 @@ function displayNotes() {
   }
 }
 
-function judgmentState(hitTime,time) {
-  // determines the judgment state from the given timings
+function judgementState(hitTime,time) {
+  // determines the judgement state from the given timings
   time += OFFSET + customOffset;
   let difference = hitTime - time;
   let returnValue = {
@@ -297,8 +297,8 @@ function judgmentState(hitTime,time) {
   return returnValue;
 }
 
-function setJudgmentState(state,early) {
-  // updates the judment state on the display and other relavent information
+function setJudgementState(state,early) {
+  // updates the judgement state on the display and other relevant information
   ++nNote;
   totalScore += SCORES[state];
   accuracy = totalScore / nNote;
@@ -316,13 +316,13 @@ function setJudgmentState(state,early) {
   } else {
     combo = 0;
   }
-  currentJudgmentState = state;
-  currentJudgmentEarly = early;
-  judgmentStartTime = Date.now();
+  currentJudgementState = state;
+  currentJudgementEarly = early;
+  judgementStartTime = Date.now();
 }
 
 function missJudge() {
-  // runs continously to check if the player missed
+  // runs continuously to check if the player missed
   let returnValue;
   let currentNote;
   for (let i = 0; i < 4; ++i) {
@@ -330,22 +330,22 @@ function missJudge() {
       // if the queue isn't empty
       currentNote = notesQueues[i][0];
       if (currentNote.type) {
-        if (!currentNote.holded && !currentNote.greyed) {
-          returnValue = judgmentState(songCurrentTime,currentSong.chart[currentNote.index][1]);
+        if (!currentNote.held && !currentNote.greyed) {
+          returnValue = judgementState(songCurrentTime,currentSong.chart[currentNote.index][1]);
           if (returnValue.state == MISS && !returnValue.early) {
             currentNote.greyed = true;
-            setJudgmentState(MISS,false);
+            setJudgementState(MISS,false);
           }
         }
-        returnValue = judgmentState(songCurrentTime,currentSong.chart[currentNote.index][2]);
+        returnValue = judgementState(songCurrentTime,currentSong.chart[currentNote.index][2]);
         if (returnValue.state == MISS && !returnValue.early) {
-          setJudgmentState(MISS,false);
+          setJudgementState(MISS,false);
           notesQueues[i].shift();
         }
       } else {
-        returnValue = judgmentState(songCurrentTime,currentSong.chart[currentNote.index][1]);
+        returnValue = judgementState(songCurrentTime,currentSong.chart[currentNote.index][1]);
         if (returnValue.state == MISS && !returnValue.early) {
-          setJudgmentState(MISS,false);
+          setJudgementState(MISS,false);
           notesQueues[i].shift();
         }
       }
@@ -360,21 +360,21 @@ function pressedJudge(lane) {
     let currentNote = notesQueues[lane][0];
     if (currentNote.type) {
       // if the note is a hold note
-      if (!currentNote.holded && !currentNote.greyed) {
+      if (!currentNote.held && !currentNote.greyed) {
         // if the player hasn't tap the hold note
-        let returnValue = judgmentState(songCurrentTime,currentSong.chart[currentNote.index][1]);
+        let returnValue = judgementState(songCurrentTime,currentSong.chart[currentNote.index][1]);
         if (returnValue.state != MISS) {
           // if the player taps the start of the hold note within the timing window
-          currentNote.holded = true;
-          setJudgmentState(returnValue.state,returnValue.early);
+          currentNote.held = true;
+          setJudgementState(returnValue.state,returnValue.early);
         }
       }
     } else {
       // if the note is a tap note
-      let returnValue = judgmentState(songCurrentTime,currentSong.chart[currentNote.index][1]);
+      let returnValue = judgementState(songCurrentTime,currentSong.chart[currentNote.index][1]);
       if (returnValue.state != MISS) {
         // if the player hit the note within the timing window
-        setJudgmentState(returnValue.state,returnValue.early);
+        setJudgementState(returnValue.state,returnValue.early);
         notesQueues[lane].shift();
       }
     }
@@ -386,16 +386,16 @@ function releasedJudge(lane) {
   if (notesQueues[lane].length) {
     // if the queue isn't empty
     let currentNote = notesQueues[lane][0];
-    if (currentNote.type && currentNote.holded && !currentNote.greyed) {
+    if (currentNote.type && currentNote.held && !currentNote.greyed) {
       // if the player tapped on the hold note and hasn't released the key
-      let returnValue = judgmentState(songCurrentTime,currentSong.chart[currentNote.index][2]);
-      setJudgmentState(returnValue.state,returnValue.early);
+      let returnValue = judgementState(songCurrentTime,currentSong.chart[currentNote.index][2]);
+      setJudgementState(returnValue.state,returnValue.early);
       if (returnValue.state != MISS) {
         // if the player released the key within the timing window
         notesQueues[lane].shift();
       } else {
         // if the player released the key too early
-        currentNote.holded = false;
+        currentNote.held = false;
         currentNote.greyed = true;
       }
     }
@@ -403,10 +403,10 @@ function releasedJudge(lane) {
 }
 
 function showStats() {
-  // displays the current judgment state, combo, and accuracy
+  // displays the current judgement state, combo, and accuracy
   noStroke();
   textAlign(CENTER,CENTER);
-  let currentTime = Date.now() - judgmentStartTime;
+  let currentTime = Date.now() - judgementStartTime;
 
   // show combo
   fill(255);
@@ -422,20 +422,20 @@ function showStats() {
   // show accuracy
   textSize(12);
   text(nf(accuracy,2,2)+"%",400,180);
-  
-  // show judgment state
-  if (currentJudgmentState != NONE) {    
+
+  // show judgement state
+  if (currentJudgementState != NONE) {    
     if (currentTime <= 50) {
-      colors = JUDGMENT_COLORS[1];
+      colors = JUDGEMENT_COLORS[1];
       textSize(28)
     } else if (currentTime <= 1000) {
-      colors = JUDGMENT_COLORS[0];
+      colors = JUDGEMENT_COLORS[0];
       textSize(24);
     } else {
-      currentJudgmentState = NONE;
+      currentJudgementState = NONE;
       return;
     }
-    switch (currentJudgmentState) {
+    switch (currentJudgementState) {
       case PERFECT:
         fill(colors[0]);
         text("PERFECT",400,150);
@@ -457,9 +457,9 @@ function showStats() {
         text("MISS",400,150);
         break;
     }
-    if (currentJudgmentState != PERFECT) {      
+    if (currentJudgementState != PERFECT) {      
       textSize(8);
-      if (currentJudgmentEarly) {
+      if (currentJudgementEarly) {
         fill("blue");
         text("EARLY",400,130);
       } else {
@@ -726,7 +726,7 @@ function draw() {
           text("Song Selection",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
-          text("You will see information about the song and the chart, and hear a short preview of the song.\nThis also includes the difficulty of the song. The larger the number, the harder the chart of the song is.\nHarder songs tends to have denser notes, more complex patterns, and require higher skills to play.\nAlso, it shows you the song's tilte, the song's artist, the duration of the song, the tempo of the song,\nand the creator of the song's chart.",400,135);
+          text("You will see information about the song and the chart, and hear a short preview of the song.\nThis also includes the difficulty of the song. The larger the number, the harder the chart of the song is.\nHarder songs tends to have denser notes, more complex patterns, and require higher skills to play.\nAlso, it shows you the song's title, the song's artist, the duration of the song, the tempo of the song,\nand the creator of the song's chart.",400,135);
           strokeWeight(2);
           stroke(255);
           rect(400,325,400,250);
@@ -762,7 +762,7 @@ function draw() {
           text("Game",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
-          text("Every note will fall down in one of the four vertical lanes when the song is playing,\nand your task is to hit the notes once they reach the judgment line,\nwhich is the white horizontal line that is close to the bottom of the screen.\nEach lanes has a corresponding key to it shown under the judgment line.\nUse that key on your keyboard to hit the notes on that lane.\nNotes in the middle two lanes will be shown in cyan, and notes in the outer two lans will be shown in white.",400,135);
+          text("Every note will fall down in one of the four vertical lanes when the song is playing,\nand your task is to hit the notes once they reach the judgement line,\nwhich is the white horizontal line that is close to the bottom of the screen.\nEach lanes has a corresponding key to it shown under the judgement line.\nUse that key on your keyboard to hit the notes on that lane.\nNotes in the middle two lanes will be shown in cyan, and notes in the outer two lanes will be shown in white.",400,135);
           strokeWeight(2);
           stroke(255);
           rect(400,325,400,250);
@@ -774,7 +774,7 @@ function draw() {
           text("Game",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
-          text("On the top of the screen, there is a progress bar that tells you how much of the song has passed.\nThe number under \"COMBO\" tells you your current combo,\nthe text under that tells you the judgment of your hit on the last note,\nand whether you hit the note too early or too late.",400,135);
+          text("On the top of the screen, there is a progress bar that tells you how much of the song has passed.\nThe number under \"COMBO\" tells you your current combo,\nthe text under that tells you the judgement of your hit on the last note,\nand whether you hit the note too early or too late.",400,135);
           strokeWeight(2);
           stroke(255);
           rect(400,325,400,250);
@@ -786,7 +786,7 @@ function draw() {
           text("Game",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
-          text("Judgment can be one of the following six:\nPefect, Great, Good, Bad, and Miss, sorting from the best to the worst.\nPerfect means you hit the last note perfectly, and Miss means you completely missed the last note.\nAny judgment other than Miss will increase your combo by one, and Miss will reset your combo to zero.\nThe jugement also affects your accuracy, which is shown below the judgment as percentage.\nThe closer you get to Perfect, the higher your accuracy will be.",400,135);
+          text("Judgement can be one of the following six:\nPerfect, Great, Good, Bad, and Miss, sorting from the best to the worst.\nPerfect means you hit the last note perfectly, and Miss means you completely missed the last note.\nAny judgement other than Miss will increase your combo by one, and Miss will reset your combo to zero.\nThe judgement also affects your accuracy, which is shown below the judgement as percentage.\nThe closer you get to Perfect, the higher your accuracy will be.",400,135);
           strokeWeight(2);
           stroke(255);
           rect(400,325,400,250);
@@ -798,7 +798,7 @@ function draw() {
           text("Note Types",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
-          text("There are two types of notes in this game. The notes shown here are tap notes.\nYou are only required to tap the corresponding key once when the bottom of them touches the judgment line.",400,135);
+          text("There are two types of notes in this game. The notes shown here are tap notes.\nYou are only required to tap the corresponding key once when the bottom of them touches the judgement line.",400,135);
           strokeWeight(2);
           stroke(255);
           rect(400,325,400,250);
@@ -810,7 +810,7 @@ function draw() {
           text("Note Types",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
-          text("The notes shown here are hold notes.\nThey are outlined in red, and you are required to hold the corresponding key\nwhen the bottom of them touches the judgment line the and release the key when the top of them reach the judgment line.\nThis type of notes produces two sperate judgments;\none for the timing of your tapping action and the other for the timing of your releasing action.",400,135)
+          text("The notes shown here are hold notes.\nThey are outlined in red, and you are required to hold the corresponding key\nwhen the bottom of them touches the judgement line the and release the key when the top of them reach the judgement line.\nThis type of notes produces two separate judgements;\none for the timing of your tapping action and the other for the timing of your releasing action.",400,135)
           strokeWeight(2);
           stroke(255);
           rect(400,325,400,250);
@@ -819,10 +819,10 @@ function draw() {
         case 13:
           textAlign(LEFT,CENTER);
           textSize(32);
-          text("Reuslt",50,50);
+          text("Result",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
-          text("After the song has finished, the game will automatically bring you to the Result page.\nIn the Result page, you can see your perfomance of the play you just had.",400,135);
+          text("After the song has finished, the game will automatically bring you to the Result page.\nIn the Result page, you can see your performance of the play you just had.",400,135);
           strokeWeight(2);
           stroke(255);
           rect(400,325,400,250);
@@ -831,7 +831,7 @@ function draw() {
         case 14:
           textAlign(LEFT,CENTER);
           textSize(32);
-          text("Reuslt",50,50);
+          text("Result",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
           text("Apart from the number of Perfects, Greats, Goods, Bads, Misses you had;\nyour accuracy; and your maximum combo, this page also shows a letter grade based on your accuracy.\nThe higher your accuracy was, the higher your grade will be.\nThe highest grade is SS, which you need an 100% accuracy or all Perfects to achieve.\nThe other grades are S, A, B, C, and D, sorted from highest to lowest.\nIf you achieve a grade lower than A, the song may be too hard for you or you may have a wrong offset.",400,135);
@@ -843,7 +843,7 @@ function draw() {
         case 15:
           textAlign(LEFT,CENTER);
           textSize(32);
-          text("Reuslt",50,50);
+          text("Result",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
           text("After you are done seeing your result, you can either play the song again by clicking \"Retry\",\nor exit to the Song Selection page by clicking \"Continue\" or pressing Escape key on your keyboard.",400,135);
@@ -882,7 +882,7 @@ function draw() {
           text("Options",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
-        text("Offset delays the timing of which the notes hit the judgment line in miliseconds.\nIf you think the notes are off-beat or you are constantly hitting Earlys or Lates,\nyou can consider changing the offset. A positive offset makes all notes hit the judgment line later,\nand a negative offset makes all notes hit the judgment line earlier.",400,135);
+        text("Offset delays the timing of which the notes hit the judgement line in milliseconds.\nIf you think the notes are off-beat or you are constantly hitting Early's or Late's,\nyou can consider changing the offset. A positive offset makes all notes hit the judgement line later,\nand a negative offset makes all notes hit the judgement line earlier.",400,135);
           strokeWeight(2);
           stroke(255);
           rect(400,325,400,250);
@@ -894,7 +894,7 @@ function draw() {
           text("Options",50,50);
           textAlign(CENTER,CENTER);
           textSize(16);
-        text("On the Result screen, if you see more Lates than Early's, you can consider increasing the offset,\nand if you see more Early's than Lates, you can consider decreasing the offset.\nSince offset can be very large, you can hold on to your Shift key while\nclicking the plus or minus arrow to increase or decrease the offset by ten instead of one.",400,135);
+        text("On the Result screen, if you see more Late's than Early's, you can consider increasing the offset,\nand if you see more Early's than Late's, you can consider decreasing the offset.\nSince offset can be very large, you can hold on to your Shift key while\nclicking the plus or minus arrow to increase or decrease the offset by ten instead of one.",400,135);
           strokeWeight(2);
           stroke(255);
           rect(400,325,400,250);
@@ -918,12 +918,12 @@ function draw() {
           text("End",50,50);
           textAlign(CENTER,CENTER);
           textSize(24);
-          text("That is the end of the tuorial.\nHave fun playing the game!\nYou can alway come back to this tutorial by clicking \"Tutorial\" in the menu.",400,250);
+          text("That is the end of the tutorial.\nHave fun playing the game!\nYou can alway come back to this tutorial by clicking \"Tutorial\" in the menu.",400,250);
           break;
       }
       break;
     case GAME:
-      songCurrentTime = Date.now() - songStartTime; // calculate the number of miliseconds that has passed since the start of the song
+      songCurrentTime = Date.now() - songStartTime; // calculate the number of milliseconds that has passed since the start of the song
       if (wait) {
         if (Date.now() - waitStart >= INITIAL_WAIT) {
           // if the waiting period at the start of the song has passed
@@ -983,7 +983,7 @@ function draw() {
       break;
     case RESULT:
       background(THEME_COLOR);
-      
+
       // dim the "retry" button and the "continue" button if the mouse hovers over them
       noStroke();
       fill(0,160);
@@ -995,40 +995,40 @@ function draw() {
           rect(700,470,200,60);
         }
       }
-      
+
       // display information about the play
       fill(255);
       textAlign(CENTER,CENTER);
       textSize(32);
       text(currentSong.title,400,80);
-      
+
       textSize(20);
       text(currentSong.artist,400,110);
-      
+
       textSize(24);
       text("Accuracy: "+nf(accuracy,2,2)+"%",400,150);
-      
+
       textSize(20);
       text("Max Combo: "+maxCombo+"x",400,180);
-      
+
       textAlign(LEFT,CENTER);
       textSize(20);
-      fill(JUDGMENT_COLORS[0][PERFECT]);
+      fill(JUDGEMENT_COLORS[0][PERFECT]);
       text("Perfect",200,225);
-      fill(JUDGMENT_COLORS[0][GREAT]);
+      fill(JUDGEMENT_COLORS[0][GREAT]);
       text("Great",200,250);
-      fill(JUDGMENT_COLORS[0][GOOD]);
+      fill(JUDGEMENT_COLORS[0][GOOD]);
       text("Good",200,275);
-      fill(JUDGMENT_COLORS[0][BAD]);
+      fill(JUDGEMENT_COLORS[0][BAD]);
       text("Bad",200,300);
-      fill(JUDGMENT_COLORS[0][MISS]);
+      fill(JUDGEMENT_COLORS[0][MISS]);
       text("Miss",200,325);
-      
+
       fill("blue");
       text("Early",200,350);
       fill("red");
       text("Late",200,375);
-      
+
       fill(255);
       text(counts[0],300,225);
       text(counts[1],300,250);
@@ -1037,7 +1037,7 @@ function draw() {
       text(counts[4],300,325);
       text(nEarly,300,350);
       text(nLate,300,375);
-      
+
       // show a grade that based on the play's accuracy
       textSize(160);
       if (accuracy < 70) {

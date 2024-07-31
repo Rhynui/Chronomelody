@@ -11,8 +11,8 @@
 /**
  * Note syntax: [laneNumber, time, endTime]
  * laneNumber - the number indicating which lane the note will appear in, starting at zero, counting from left to right
- * time       - the time from the song's start when the note hits the judgment line in miliseconds
- * endTime    - (only for hold notes) the time from the song's start when the end of the hold note hits the judgment ine in miliseconds; value is -1 for tap notes
+ * time       - the time from the song's start when the note hits the judgment line in milliseconds
+ * endTime    - (only for hold notes) the time from the song's start when the end of the hold note hits the judgment ine in milliseconds; value is -1 for tap notes
  */
 
 // The Words I Never Said in D&B - Mage

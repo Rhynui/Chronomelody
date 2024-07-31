@@ -15,7 +15,7 @@
  * bpm - the BPM of the song
  * difficulty - the difficulty of the song
  * chart - the constant name of the song's chart
- * previewTime - the time in milisecond of when the song is played in the song select screen
+ * previewTime - the time in millisecond of when the song is played in the song select screen
  */
 
 // create a structure to store all kinds of metadata
